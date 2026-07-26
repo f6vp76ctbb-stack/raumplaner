@@ -16,7 +16,7 @@ keine Analytik. Der Export ist das Kernfeature, nicht die Optik.
 
 | Phase | Inhalt | Stand |
 |---|---|---|
-| 0 | Risiko-Spike 3D (expo-gl + three.js) | **blockiert** — braucht macOS/Xcode und ein Gerät |
+| 0 | Risiko-Spike 3D (expo-gl + three.js) | **Code fertig, wartet auf Messung** → [PHASE0.md](./PHASE0.md) |
 | 1 | Fundament: Typen, Zod, Store mit Undo/Redo, SQLite | **fertig** |
 | 2 | Engine: Flächen, Lücken, Kollisionen | offen |
 | 3 | 2D-Editor | offen |
@@ -58,19 +58,21 @@ npm test          # Vitest gegen Modell, Engine und Store
 npm run typecheck # tsc --noEmit, strict
 ```
 
-Tests und Typecheck laufen **ohne** macOS, Xcode oder Gerät — das ist der
-Zweck der Schichttrennung.
+Tests und Typecheck laufen **ohne** Android-SDK, Xcode oder Gerät — das ist
+der Zweck der Schichttrennung.
 
 ### Development Build
 
-Skia, expo-gl und Reanimated brauchen native Module. Expo Go reicht nicht.
+Skia, expo-gl und Reanimated sind native Module. Expo Go enthält sie nicht.
 
 ```bash
-npx eas build --profile development --platform ios
+npx eas login
+npx eas init
+npx eas build --profile development --platform android
 ```
 
-Voraussetzungen: Apple Developer Program, EAS-Account, ein registriertes
-Testgerät. Ohne das ist kein Start auf iOS möglich.
+Der Bau läuft auf Expos Servern und liefert ein APK — **kein Mac nötig**.
+Schritt für Schritt in [PHASE0.md](./PHASE0.md).
 
 ---
 
@@ -86,6 +88,9 @@ Testgerät. Ohne das ist kein Start auf iOS möglich.
   bei `3.1.0` steht. Immer `npx expo install`, nie `npm i`.
 
 Aktuelle Basis: Expo SDK 57, React Native 0.86, React 19.2.3.
+
+**Zielplattformen:** Android zuerst (Play Store), iOS danach aus derselben
+Codebasis. Begründung in [DECISIONS.md](./DECISIONS.md) unter E15.
 
 ---
 

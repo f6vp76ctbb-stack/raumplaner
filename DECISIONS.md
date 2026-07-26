@@ -201,15 +201,56 @@ auftaucht.
 
 ---
 
-## Offen — vom Nutzer noch zu entscheiden
+## E15 — Android und Play Store zuerst, iOS später
+
+Vom Nutzer entschieden. Die Codebasis bleibt eine einzige; geändert hat sich
+die Reihenfolge der Zielplattformen, nicht der Aufbau.
+
+**Warum das gut zusammenpasst:** Der Nutzer hat keinen Mac. Android-Builds
+brauchen keinen — EAS baut in der Cloud, das Ergebnis ist ein APK, das direkt
+aufs Telefon geht. Ein iOS-Build wäre ohne Mac zwar auch über EAS möglich,
+setzt aber ein Apple-Entwicklerkonto für 99 USD pro Jahr voraus. Play kostet
+25 USD einmalig.
+
+**Was sich dadurch ändert — durchweg zugunsten des Aufwands:**
+
+| Vorhaben | iOS | Android |
+|---|---|---|
+| `.roomplan` als Dokumenttyp | eigene UTI, Info.plist | Intent-Filter + MIME-Typ, reine Konfiguration |
+| JSON aus anderen Apps empfangen | Share-Extension = **zweites Xcode-Target** | Intent-Filter für `ACTION_SEND`, praktisch kostenlos |
+| Kurzbefehle | App Intents, Swift-Plugin nötig | App Shortcuts, deutlich einfacher |
+| Datenschutzangabe | `PrivacyInfo.xcprivacy` im Code | Data-Safety-Formular in der Play Console |
+| Stift | Apple Pencil | S Pen / generischer Stylus |
+
+Der teuerste Posten der ursprünglichen Anforderungsliste — die
+Share-Extension — schrumpft auf Android zu einem Eintrag in `app.json`. Das
+ist der größte Einzelgewinn dieser Reihenfolge.
+
+**Was bestehen bleibt:** Kein WebView, vollständig offline, Millimeter als
+Integer, Engine ohne UI-Abhängigkeit. Diese Vorgaben sind plattformunabhängig
+und gelten unverändert.
+
+**Kosten einer Umkehr:** Gering. Es wurde nichts iOS-Spezifisches gebaut,
+und `app.json` trägt beide Plattformen nebeneinander.
+
+---
+
+## E16 — `expo-dev-client` statt Expo Go
+
+**Warum:** Skia, expo-gl und Reanimated sind native Module; Expo Go enthält
+sie nicht. Der Development Build wird einmal gebaut und gilt danach für alle
+JavaScript-Änderungen — die Kosten fallen genau einmal an.
+
+---
+
+## Offen — noch zu entscheiden
 
 | Thema | Stand |
 |---|---|
-| Apple Developer Program, EAS-Account, Team-ID | offen — ohne das kein Dev-Build und kein Store-Upload |
-| Testgeräte (iPhone-/iPad-Modell, iOS-Version) | offen |
-| iPad als gleichwertiges Ziel? | **Widerspruch**: Ursprungsbriefing sagt "gleichwertig, nicht Nachgedanke", spätere Antwort sagt "fürs Handy". Aktuell ist `supportsTablet: true` und die Orientierung frei — beides bleibt, bis geklärt |
-| Share-Extension in 1.0? | offen — teuerster Posten, zweites Xcode-Target |
-| App Intents in 1.0? | offen — Empfehlung: nach 1.0 verschieben |
-| Minimum-iOS-Version | Empfehlung iOS 17, noch nicht gesetzt |
+| **Phase-0-Ergebnis** | **wartet auf dich** — Runbook in [PHASE0.md](./PHASE0.md), Abnahme über die fünf Kriterien dort |
+| Google-Play-Konto angelegt? | offen — 25 USD einmalig; die 12-Tester-Regel über 14 Tage läuft unabhängig vom Code und sollte früh starten |
+| Tablets gleichwertig? | Ursprungsbriefing sagt ja ("primär ein Tablet-Werkzeug"), spätere Antwort sagt "fürs Handy". Aktuell laufen beide mit, weil freie Bildschirmdrehung nichts kostet |
+| Minimum-Android-Version | Empfehlung: API 24 (Android 7). Expo SDK 57 setzt die Untergrenze ohnehin |
+| iOS wann? | nach der Play-Veröffentlichung; braucht dann Apple-Konto für 99 USD/Jahr |
 | Speichert `.roomplan` auch Fotos? | Empfehlung: nein, reines JSON |
 | Dachschrägen in der Lückenberechnung? | Empfehlung: 1.0 ohne |

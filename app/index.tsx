@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 
+import { Link } from 'expo-router';
+
 import { listProjects, loadProject, type ProjectSummary } from '../src/db/database';
 import { useProjectStore } from '../src/store/projectStore';
 import { useTheme } from '../src/theme/useTheme';
@@ -86,6 +88,27 @@ export default function ProjectListScreen() {
         <Text style={[styles.empty, { color: theme.textMuted }]}>
           Noch kein Projekt vorhanden.
         </Text>
+      }
+      ListFooterComponent={
+        // Zugang zum Phase-0-Spike, hart an __DEV__ gekoppelt. Damit kann der
+        // Wegwerf-Bildschirm nicht versehentlich in einer Store-Veröffentlichung
+        // erreichbar sein — ein erreichbarer Debug-Screen ist bei Google ein
+        // Qualitätsmangel und bei Apple ein Ablehnungsgrund unter 2.3.1.
+        __DEV__ ? (
+          <Link href="/spike" asChild>
+            <Pressable
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.devLink,
+                { borderColor: theme.border, opacity: pressed ? 0.6 : 1 },
+              ]}
+            >
+              <Text style={[styles.devLinkText, { color: theme.textMuted }]}>
+                Phase-0-Spike öffnen (nur Entwicklung)
+              </Text>
+            </Pressable>
+          </Link>
+        ) : null
       }
       renderItem={({ item }) => {
         const stat = stats[item.id];
@@ -202,6 +225,15 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  devLink: {
+    marginTop: spacing.xl,
+    paddingVertical: spacing.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.sm,
+    borderStyle: 'dashed',
+    alignItems: 'center',
+  },
+  devLinkText: { fontSize: fontSize.sm },
   metricValue: {
     fontFamily: fontFamily.mono,
     fontSize: fontSize.md,

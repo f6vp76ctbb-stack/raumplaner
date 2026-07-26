@@ -74,6 +74,7 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" options={{ title: 'Projekte' }} />
+          <Stack.Screen name="spike" options={{ title: 'Phase-0-Spike' }} />
         </Stack>
       </GestureHandlerRootView>
     </SafeAreaProvider>
